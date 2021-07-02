@@ -1,0 +1,13 @@
+{
+  "azureFunctions.deploySubpath": ".",
+  "azureFunctions.postDeployTask": "npm install",
+  "azureFunctions.projectLanguage": "TypeScript",
+  "azureFunctions.projectRuntime": "~3",
+  "debug.internalConsoleOptions": "neverOpen",
+  "azureFunctions.preDeployTask": "npm prune",
+  "typescript.preferences.quoteStyle": "single",
+  "files.exclude": {
+    "node_modules": true,
+    "dist": true
+  }
+}
