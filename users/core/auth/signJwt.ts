@@ -29,7 +29,7 @@ export function signJwt(userId: string, options: SignOptions) {
               token,
             });
           }
-        }
+        },
       );
     } catch (err) {
       reject(err);

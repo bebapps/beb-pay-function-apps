@@ -20,7 +20,7 @@ export function verifyJwt(token: string, options: VerifyOptions) {
           } else {
             resolve(claims);
           }
-        }
+        },
       );
     } catch (err) {
       reject(err);
