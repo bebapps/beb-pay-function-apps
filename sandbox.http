@@ -1,0 +1,36 @@
+# Login
+POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users/login
+Content-Type: application/json
+
+{
+  "email": "jacob@bebapps.com",
+  "password": "HelloWorld1"
+}
+
+###
+
+# Create Store
+POST http://localhost:7071/api/stores
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+
+{
+  "name": "Example Store"
+}
+
+###
+
+# Get Products
+GET http://localhost:7071/api/stores/bd13b7bb-054f-4a80-b213-08b43aa48d27/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+
+###
+
+# Create Product
+POST http://localhost:7071/api/stores/bd13b7bb-054f-4a80-b213-08b43aa48d27/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+
+{
+  "name": "Product 1",
+  "description": "This is a nice product!",
+  "price": 1
+}
