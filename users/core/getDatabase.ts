@@ -9,7 +9,6 @@ async function createDatabase() {
 
   const { database } = await client.databases.createIfNotExists({
     id: 'beb-pay',
-    throughput: 400,
   });
 
   const { container: users } = await database.containers.createIfNotExists({
