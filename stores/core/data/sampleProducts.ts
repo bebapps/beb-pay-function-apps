@@ -6,9 +6,9 @@ export const sampleProducts: Product[] = [
     description: 'Made in Australia',
     price: 3.30,
     images: [
-      { resourcePath: '/sample-product-images/chicken-shapes-0.webp' },
-      { resourcePath: '/sample-product-images/chicken-shapes-1.jpeg' },
-      { resourcePath: '/sample-product-images/chicken-shapes-2.webp' },
+      '/sample-product-images/chicken-shapes-0.webp',
+      '/sample-product-images/chicken-shapes-1.jpeg',
+      '/sample-product-images/chicken-shapes-2.webp',
     ],
   },
   {
@@ -16,9 +16,9 @@ export const sampleProducts: Product[] = [
     description: 'Made in Australia',
     price: 3.30,
     images: [
-      { resourcePath: '/sample-product-images/cheddar-shapes-0.jpeg' },
-      { resourcePath: '/sample-product-images/cheddar-shapes-1.jpeg' },
-      { resourcePath: '/sample-product-images/cheddar-shapes-2.jpeg' },
+      '/sample-product-images/cheddar-shapes-0.jpeg',
+      '/sample-product-images/cheddar-shapes-1.jpeg',
+      '/sample-product-images/cheddar-shapes-2.jpeg',
     ],
   },
 ];

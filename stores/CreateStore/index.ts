@@ -4,7 +4,18 @@ import { sampleProducts } from '../core/data/sampleProducts';
 import { getDatabase } from '../core/getDatabase';
 import { Store } from '../core/models/Store';
 import { withoutResource } from '../core/models/withoutResource';
-import * as responses from '../core/responses/createStore';
+import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+
+const STORE_CREATED = createSuccessResponse(
+  'STORE_CREATED',
+  'Successfully created store.',
+);
+
+const FAILED_TO_CREATE_STORE = createErrorResponse(
+  'STORES_FAILED_TO_CREATE_STORE',
+  'An unknown error occurred while attempting to create the store. Please try again.',
+  500,
+);
 
 export default async function (context: Context, req: HttpRequest) {
   const userId = await getUserIdFromRequest(req);
@@ -14,8 +25,12 @@ export default async function (context: Context, req: HttpRequest) {
   const store: Store = {
     name: body.name,
     userIds: [userId],
+    logo: null,
+    branding: {},
     createdDate: new Date().toISOString(),
-    createdByUserId: userId,
+    createdBy: userId,
+    lastUpdatedDate: null,
+    lastUpdatedBy: null,
   };
 
   try {
@@ -29,7 +44,7 @@ export default async function (context: Context, req: HttpRequest) {
       },
     })));
 
-    return responses.STORE_CREATED({
+    return STORE_CREATED({
       store: withoutResource(storeResource),
     });
   } catch (err) {
@@ -37,7 +52,7 @@ export default async function (context: Context, req: HttpRequest) {
 
     switch (err.code) {
       default: {
-        return responses.FAILED_TO_CREATE_STORE();
+        return FAILED_TO_CREATE_STORE();
       }
     }
   }

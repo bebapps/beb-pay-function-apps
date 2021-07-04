@@ -1,4 +1,14 @@
-# Login
+POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users
+Content-Type: application/json
+
+{
+  "email": "jacob@bebapps.com",
+  "password": "HelloWorld1"
+}
+
+###
+
+# @name login
 POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users/login
 Content-Type: application/json
 
@@ -9,9 +19,11 @@ Content-Type: application/json
 
 ###
 
-# Create Store
+@accessToken = {{login.response.body.$.result.authorization.accessToken.token}}
+
 POST http://localhost:7071/api/stores
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "name": "Example Store"
@@ -19,18 +31,55 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4N
 
 ###
 
+# Get Stores
+GET http://localhost:7071/api/stores
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Upload Logo to Store
+PUT http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/logo
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=----boundary
+
+------boundary
+Content-Disposition: form-data; name="logo"; filename="chicken-shapes-0.webp"
+Content-Type: image/webp
+
+< /Users/jacob/Desktop/chicken-shapes-0.webp
+------boundary--
+
+
+###
+
 # Get Products
-GET http://localhost:7071/api/stores/bd13b7bb-054f-4a80-b213-08b43aa48d27/products
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+GET http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products
+Authorization: Bearer {{accessToken}}
 
 ###
 
 # Create Product
-POST http://localhost:7071/api/stores/bd13b7bb-054f-4a80-b213-08b43aa48d27/products
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjUzMDE4NzksImlhdCI6MTYyNTMwMTU3OSwiYXVkIjoiYXQiLCJzdWIiOiIyY2ZjMjI1OS1hMzdlLTQ3NTEtOTI4ZC00NjVkNTZjM2ZjYTQifQ.GbFoylPbnxm2pCQzcsSd9dlC5xRSGZn842ocJPdqBrA
+POST http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Product 1",
+  "name": "Product with images 1",
   "description": "This is a nice product!",
   "price": 1
 }
+
+###
+
+# Add Image to Product
+POST http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products/cf7455dd-0bd4-420d-b282-782080799a36/images
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=----boundary
+
+------boundary
+Content-Disposition: form-data; name="image"; filename="chicken-shapes-0.webp"
+Content-Type: image/webp
+
+< /Users/jacob/Desktop/chicken-shapes-0.webp
+------boundary--
+

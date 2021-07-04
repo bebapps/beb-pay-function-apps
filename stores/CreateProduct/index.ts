@@ -3,8 +3,19 @@ import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
 import { StoreProduct } from '../core/models/StoreProduct';
 import { withoutResource } from '../core/models/withoutResource';
-import * as responses from '../core/responses/createProduct';
 import { doesUserBelongToStore } from '../core/auth/doesUserBelongToStore';
+import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+
+const PRODUCT_CREATED = createSuccessResponse(
+  'PRODUCT_CREATED',
+  'Successfully created product.',
+);
+
+const FAILED_TO_CREATE_PRODUCT = createErrorResponse(
+  'STORES_FAILED_TO_CREATE_PRODUCT',
+  'An unknown error occurred while attempting to create a product. Please try again.',
+  500,
+);
 
 export default async function (context: Context, req: HttpRequest) {
   const userId = await getUserIdFromRequest(req);
@@ -14,7 +25,7 @@ export default async function (context: Context, req: HttpRequest) {
   const [belongsToStore] = await doesUserBelongToStore(userId, storeId);
 
   if (!belongsToStore) {
-    return responses.FAILED_TO_CREATE_PRODUCT();
+    return FAILED_TO_CREATE_PRODUCT();
   }
 
   const product: StoreProduct = {
@@ -29,12 +40,12 @@ export default async function (context: Context, req: HttpRequest) {
     const { storeProducts } = await getDatabase();
     const { resource: productResource } = await storeProducts.items.create(product);
 
-    return responses.PRODUCT_CREATED({
+    return PRODUCT_CREATED({
       product: withoutResource(productResource),
     });
   } catch (err) {
     console.error(err);
 
-    return responses.FAILED_TO_CREATE_PRODUCT();
+    return FAILED_TO_CREATE_PRODUCT();
   }
 };
