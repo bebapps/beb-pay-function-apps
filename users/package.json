@@ -1,7 +1,7 @@
 {
   "name": "users",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "watch": "tsc -w",
     "prestart": "npm run build",
     "start": "func start"
