@@ -6,9 +6,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "put"
+        "post"
       ],
-      "route": "stores/{storeId}/logo"
+      "route": "stores/{storeId}/products/{productId}"
     },
     {
       "type": "http",
@@ -16,5 +16,5 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/UploadStoreLogo/index.js"
+  "scriptFile": "../dist/UpdateProduct/index.js"
 }

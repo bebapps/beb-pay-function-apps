@@ -2,7 +2,7 @@ POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users
 Content-Type: application/json
 
 {
-  "email": "jacob@bebapps.com",
+  "email": "daniel@bebapps.com",
   "password": "HelloWorld1"
 }
 
@@ -26,7 +26,20 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Example Store"
+  "name": "Example Store 3"
+}
+
+###
+
+# Update Store (JSON)
+PUT http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "country": "New Zealand",
+  "currency": "NZD",
+  "status": "active"
 }
 
 ###
@@ -37,10 +50,15 @@ Authorization: Bearer {{accessToken}}
 
 ###
 
-# Upload Logo to Store
-PUT http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/logo
+# Update Store (Form Data)
+PUT http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a
 Authorization: Bearer {{accessToken}}
 Content-Type: multipart/form-data; boundary=----boundary
+
+------boundary
+Content-Disposition: form-data; name="name"
+
+Example Store 1
 
 ------boundary
 Content-Disposition: form-data; name="logo"; filename="chicken-shapes-0.webp"
@@ -49,37 +67,46 @@ Content-Type: image/webp
 < /Users/jacob/Desktop/chicken-shapes-0.webp
 ------boundary--
 
-
 ###
 
 # Get Products
-GET http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products
+GET http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products
 Authorization: Bearer {{accessToken}}
 
 ###
 
 # Create Product
-POST http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products
+POST http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Product with images 1",
-  "description": "This is a nice product!",
-  "price": 1
+  "name": "Daniel",
+  "description": "Tasty!",
+  "price": 100
 }
 
 ###
 
+# Get Product
+GET http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products/0e09d84f-69ef-427b-998e-2cbd1be82dfb
+Authorization: Bearer {{accessToken}}
+
+###
+
 # Add Image to Product
-POST http://localhost:7071/api/stores/72517b84-d08b-4300-a76a-a6e9d04f6286/products/cf7455dd-0bd4-420d-b282-782080799a36/images
+POST http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products/0e09d84f-69ef-427b-998e-2cbd1be82dfb
 Authorization: Bearer {{accessToken}}
 Content-Type: multipart/form-data; boundary=----boundary
 
 ------boundary
-Content-Disposition: form-data; name="image"; filename="chicken-shapes-0.webp"
-Content-Type: image/webp
+Content-Disposition: form-data; name="images[]"; filename="daniel-1.png"
+Content-Type: image/png
 
-< /Users/jacob/Desktop/chicken-shapes-0.webp
+< /Users/jacob/Desktop/30d6c9db80103db06eaf6ca9d8507307-sticker.png
+------boundary
+Content-Disposition: form-data; name="images[]"; filename="daniel-2.png"
+Content-Type: image/png
+
+< /Users/jacob/Desktop/61c301c039bd1c40c53823a5ea7021f5-sticker.png
 ------boundary--
-

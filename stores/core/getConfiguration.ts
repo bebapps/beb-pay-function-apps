@@ -9,6 +9,8 @@ export interface Configuration {
   JWT_SIGNING_SECRET: string;
   SENDGRID_API_KEY: string;
   RESOURCES_STORAGE_ACCOUNT_CONNECTION_STRING: string;
+  RAPYD_SECRET_KEY: string;
+  RAPYD_ACCESS_KEY: string;
 }
 
 let lastSentinelEtag: string | undefined;

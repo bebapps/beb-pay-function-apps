@@ -1,12 +1,29 @@
+import { Resource } from '@azure/cosmos';
+
 export interface Store {
   name: string;
+  status: 'inactive' | 'active';
+  country: string | null;
+  currency: string | null;
   userIds: string[];
   logo: string | null;
   branding: {
-    [key: string]: string | number;
+    [key: string]: string | number | boolean;
+  };
+  wallet: {
+    id: `ewallet_${string}`;
   };
   createdDate: string;
   createdBy: string;
   lastUpdatedDate: string | null;
   lastUpdatedBy: string | null;
+}
+
+export function mapStore(store: Store & Resource) {
+  return {
+    id: store.id,
+    name: store.name,
+    logo: store.logo,
+    branding: store.branding,
+  };
 }

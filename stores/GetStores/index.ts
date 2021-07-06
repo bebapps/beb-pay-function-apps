@@ -1,7 +1,7 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
-import { withoutResource } from '../core/models/withoutResource';
+import { mapStore } from '../core/models/Store';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
 
 const STORES = createSuccessResponse(
@@ -28,7 +28,7 @@ export default async function (context: Context, req: HttpRequest) {
     }).fetchAll();
 
     return STORES({
-      stores: storeResources.map((storeResource) => withoutResource(storeResource)),
+      stores: storeResources.map((storeResource) => mapStore(storeResource)),
     });
   } catch (err) {
     console.error(err);

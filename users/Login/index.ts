@@ -2,11 +2,28 @@ import { Context, HttpRequest } from '@azure/functions';
 import { getDatabase } from '../core/getDatabase';
 import { User } from '../core/models/User';
 import * as bcrypt from 'bcryptjs';
-import * as responses from '../core/responses/login';
 import { withoutResource } from '../core/models/withoutResource';
 import { Resource } from '@azure/cosmos';
 import { createRefreshToken } from '../core/auth/createRefreshToken';
 import { createAccessToken } from '../core/auth/createAccessToken';
+import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+
+const LOGGED_IN = createSuccessResponse(
+  'LOGGED_IN',
+  'Successfully logged in.',
+);
+
+const INVALID_LOGIN = createErrorResponse(
+  'USERS_ERROR_INVALID_LOGIN',
+  'Invalid login, please try again.',
+  400,
+);
+
+const FAILED_TO_LOGIN = createErrorResponse(
+  'USERS_FAILED_TO_LOGIN',
+  'An unknown error occurred while attempting to login. Please try again.',
+  500,
+);
 
 interface Login {
   email: string;
@@ -21,7 +38,7 @@ export default async function (context: Context, req: HttpRequest) {
     !body.email.includes('@') ||
     typeof body.password !== 'string'
   ) {
-    return responses.INVALID_LOGIN();
+    return INVALID_LOGIN();
   }
 
   const { users } = await getDatabase();
@@ -33,11 +50,11 @@ export default async function (context: Context, req: HttpRequest) {
     ).fetchAll();
 
     if (!user) {
-      return responses.INVALID_LOGIN();
+      return INVALID_LOGIN();
     }
 
     if (!await bcrypt.compare(body.password, user.password)) {
-      return responses.INVALID_LOGIN();
+      return INVALID_LOGIN();
     }
 
     const [refreshToken, accessToken] = await Promise.all([
@@ -45,7 +62,7 @@ export default async function (context: Context, req: HttpRequest) {
       createAccessToken(user.id),
     ]);
 
-    return responses.LOGGED_IN({
+    return LOGGED_IN({
       user: withoutResource(user),
       authorization: {
         refreshToken,
@@ -57,7 +74,7 @@ export default async function (context: Context, req: HttpRequest) {
 
     switch (err.code) {
       default: {
-        return responses.FAILED_TO_LOGIN();
+        return FAILED_TO_LOGIN();
       }
     }
   }

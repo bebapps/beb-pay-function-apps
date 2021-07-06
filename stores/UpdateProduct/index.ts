@@ -1,12 +1,13 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
-import { StoreProduct } from '../core/models/StoreProduct';
+import { mapStoreProduct, StoreProduct } from '../core/models/StoreProduct';
 import { withoutResource } from '../core/models/withoutResource';
 import { doesUserBelongToStore } from '../core/auth/doesUserBelongToStore';
-import { FormDataItem, getMultipartFormData } from '../core/getMultipartFormData';
 import { uploadProductImage } from '../core/resources/uploadProductImage';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+import { getBody } from '../core/getBody';
+import { Product } from '../core/models/Product';
 
 const PRODUCT_IMAGE_ADDED = createSuccessResponse(
   'PRODUCT_IMAGE_ADDED',
@@ -19,8 +20,10 @@ const FAILED_TO_ADD_PRODUCT_IMAGE = createErrorResponse(
   500,
 );
 
+type UpdateProduct = Partial<Pick<Product, 'name' | 'description' | 'price'>>;
+
 export default async function (context: Context, req: HttpRequest) {
-  const formData = getMultipartFormData(req);
+  const [fields, files] = getBody<UpdateProduct>(req);
   const userId = await getUserIdFromRequest(req);
   const { storeId, productId } = req.params;
 
@@ -30,25 +33,34 @@ export default async function (context: Context, req: HttpRequest) {
     return FAILED_TO_ADD_PRODUCT_IMAGE();
   }
 
-  const images: FormDataItem[] = [];
-  for (const [, file] of formData) {
-    images.push(file);
-  }
-
   try {
-    const resourcePaths = await Promise.all(images.map((image) => (
-      uploadProductImage(productId, image.value, image.contentType)
-    )));
-
     const { storeProducts } = await getDatabase();
     const storeProductItem = storeProducts.item(productId, storeId);
 
-    const { resource: productResource } = await storeProductItem.read<StoreProduct>();
-    productResource.images.push(...resourcePaths);
-    await storeProductItem.replace(productResource);
+    const { resource: storeProductResource } = await storeProductItem.read<StoreProduct>();
+
+    if (typeof fields.name !== 'undefined') {
+      storeProductResource.name = fields.name;
+    }
+
+    if (typeof fields.description !== 'undefined') {
+      storeProductResource.description = fields.description;
+    }
+
+    if (typeof fields.price !== 'undefined') {
+      storeProductResource.price = fields.price;
+    }
+
+    if (Array.isArray(files.images)) {
+      storeProductResource.images.push(...await Promise.all(files.images.map((image) => (
+        uploadProductImage(productId, image.value, image.contentType)
+      ))));
+    }
+
+    await storeProductItem.replace(storeProductResource);
 
     return PRODUCT_IMAGE_ADDED({
-      product: withoutResource(productResource),
+      product: mapStoreProduct(storeProductResource),
     });
   } catch (err) {
     console.error(err);

@@ -1,10 +1,13 @@
+import { v4 as uuid } from 'uuid';
 import { Context, HttpRequest } from '@azure/functions';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { sampleProducts } from '../core/data/sampleProducts';
 import { getDatabase } from '../core/getDatabase';
-import { Store } from '../core/models/Store';
-import { withoutResource } from '../core/models/withoutResource';
+import { mapStore, Store } from '../core/models/Store';
+import { getRapydClient } from '../core/rapyd/client';
+import { createWallet } from '@bebapps/rapyd-sdk/dist/generated/wallet/apis/Wallet';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+import { Resource } from '@azure/cosmos';
 
 const STORE_CREATED = createSuccessResponse(
   'STORE_CREATED',
@@ -17,16 +20,22 @@ const FAILED_TO_CREATE_STORE = createErrorResponse(
   500,
 );
 
+type CreateStore = Partial<Pick<Store, 'name' | 'country' | 'currency' | 'branding'>>;
+
 export default async function (context: Context, req: HttpRequest) {
   const userId = await getUserIdFromRequest(req);
   const { stores, storeProducts } = await getDatabase();
-  const body = req.body;
+  const body = req.body as CreateStore;
 
-  const store: Store = {
-    name: body.name,
+  const store: Store & Pick<Resource, 'id'> = {
+    id: uuid(),
+    name: body.name ?? 'My Store',
+    country: body.country ?? null,
+    currency: body.currency ?? null,
     userIds: [userId],
     logo: null,
-    branding: {},
+    branding: { ...body.branding },
+    wallet: null,
     createdDate: new Date().toISOString(),
     createdBy: userId,
     lastUpdatedDate: null,
@@ -34,6 +43,16 @@ export default async function (context: Context, req: HttpRequest) {
   };
 
   try {
+    const wallet = await createWallet(await getRapydClient(), {
+      contact: {
+        contact_type: 'personal',
+      },
+      ewallet_reference_id: store.id,
+    });
+    store.wallet = {
+      id: wallet.id,
+    };
+
     const { resource: storeResource } = await stores.items.create<Store>(store);
 
     await storeProducts.items.bulk(sampleProducts.map((product) => ({
@@ -45,7 +64,7 @@ export default async function (context: Context, req: HttpRequest) {
     })));
 
     return STORE_CREATED({
-      store: withoutResource(storeResource),
+      store: mapStore(storeResource),
     });
   } catch (err) {
     console.error(err);

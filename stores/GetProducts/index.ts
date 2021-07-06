@@ -20,9 +20,9 @@ export default async function (context: Context, req: HttpRequest) {
   const userId = await getUserIdFromRequest(req);
   const storeId = req.params.storeId;
 
-  const [belongsToStore] = await doesUserBelongToStore(userId, storeId);
+  const [doesBelong] = await doesUserBelongToStore(userId, storeId);
 
-  if (!belongsToStore) {
+  if (!doesBelong) {
     return FAILED_TO_LOAD_PRODUCTS();
   }
 
