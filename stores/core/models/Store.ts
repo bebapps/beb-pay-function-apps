@@ -1,4 +1,5 @@
 import { Resource } from '@azure/cosmos';
+import { getPublicUrl } from '../getPublicUrl';
 
 export interface Store {
   name: string;
@@ -24,9 +25,10 @@ export function mapStore(store: Store & Resource) {
     id: store.id,
     status: store.status,
     name: store.name,
-    logo: store.logo,
+    logo: store.logo && getPublicUrl(store.logo),
     branding: store.branding,
     country: store.country,
     currency: store.currency,
+    url: getPublicUrl('/' + store.id),
   };
 }

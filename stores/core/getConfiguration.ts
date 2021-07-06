@@ -11,6 +11,7 @@ export interface Configuration {
   RESOURCES_STORAGE_ACCOUNT_CONNECTION_STRING: string;
   RAPYD_SECRET_KEY: string;
   RAPYD_ACCESS_KEY: string;
+  PUBLIC_URL: string;
 }
 
 let lastSentinelEtag: string | undefined;
