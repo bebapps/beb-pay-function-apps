@@ -20,7 +20,7 @@ const FAILED_TO_CREATE_STORE = createErrorResponse(
   500,
 );
 
-type CreateStore = Partial<Pick<Store, 'name' | 'country' | 'currency' | 'branding'>>;
+type CreateStore = Partial<Pick<Store, 'name' | 'description' | 'country' | 'currency' | 'branding'>>;
 
 export default async function (context: Context, req: HttpRequest) {
   const userId = await getUserIdFromRequest(req);
@@ -31,6 +31,7 @@ export default async function (context: Context, req: HttpRequest) {
     id: uuid(),
     status: 'inactive',
     name: body.name ?? 'My Store',
+    description: body.description ?? null,
     country: body.country ?? null,
     currency: body.currency ?? null,
     userIds: [userId],

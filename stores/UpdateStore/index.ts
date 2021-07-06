@@ -19,7 +19,7 @@ const FAILED_TO_UPDATE_STORE = createErrorResponse(
   500,
 );
 
-type UpdateStore = Partial<Pick<Store, 'name' | 'branding' | 'country' | 'currency' | 'status'>>;
+type UpdateStore = Partial<Pick<Store, 'name' | 'description' | 'branding' | 'country' | 'currency' | 'status'>>;
 
 export default async function (context: Context, req: HttpRequest) {
   const { storeId } = req.params;
@@ -32,6 +32,10 @@ export default async function (context: Context, req: HttpRequest) {
   return await updateStoreAsUser(storeId, userId, async (store) => {
     if (typeof fields.name === 'string') {
       store.name = fields.name;
+    }
+
+    if (typeof fields.description === 'string') {
+      store.description = fields.description;
     }
 
     if (typeof fields.branding !== 'undefined') {

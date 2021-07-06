@@ -4,6 +4,7 @@ import { getPublicUrl } from '../getPublicUrl';
 export interface Store {
   name: string;
   status: 'inactive' | 'active';
+  description: string | null;
   country: string | null;
   currency: string | null;
   userIds: string[];
@@ -25,6 +26,7 @@ export function mapStore(store: Store & Resource) {
     id: store.id,
     status: store.status,
     name: store.name,
+    description: store.description,
     logo: store.logo && getPublicUrl(store.logo),
     branding: store.branding,
     country: store.country,
