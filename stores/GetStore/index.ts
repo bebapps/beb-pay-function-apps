@@ -1,9 +1,7 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { doesUserBelongToStore } from '../core/auth/doesUserBelongToStore';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
-import { mapStore } from '../core/models/Store';
-import { withoutResource } from '../core/models/withoutResource';
+import { mapStore, Store } from '../core/models/Store';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
 
 const STORE = createSuccessResponse(
@@ -18,14 +16,19 @@ const FAILED_TO_LOAD_STORE = createErrorResponse(
 );
 
 export default async function (context: Context, req: HttpRequest) {
-  const userId = await getUserIdFromRequest(req);
   const { storeId } = req.params;
 
-  const [doesBelong, store] = await doesUserBelongToStore(userId, storeId);
+  const userId = await getUserIdFromRequest(req, false);
 
-  if (doesBelong || store.status === 'active') {
+  const { stores } = await getDatabase();
+  const { resource: storeResource } = await stores.item(storeId, storeId).read<Store>();
+
+  const isUser = userId !== null && storeResource.userIds.includes(userId);
+  const isStoreActive = storeResource.status === 'active';
+
+  if (isUser || isStoreActive) {
     return STORE({
-      store: mapStore(store),
+      store: mapStore(storeResource),
     });
   }
 

@@ -1,11 +1,15 @@
 import { HttpRequest } from '@azure/functions';
 import { verifyJwt } from './verifyJwt';
 
-export async function getUserIdFromRequest(req: HttpRequest) {
-  const [, token] = req.headers.authorization.split(' ');
+export async function getUserIdFromRequest(req: HttpRequest, isRequired: boolean = true) {
+  const authorization = req.headers.authorization || '';
+  const [, token] = authorization.split(' ');
 
   if (!token) {
-    throw new Error('Missing authorization.');
+    if (isRequired) {
+      throw new Error('Missing authorization.');
+    }
+    return null;
   }
 
   let userId: string;
