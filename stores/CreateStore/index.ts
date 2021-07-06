@@ -29,6 +29,7 @@ export default async function (context: Context, req: HttpRequest) {
 
   const store: Store & Pick<Resource, 'id'> = {
     id: uuid(),
+    status: 'inactive',
     name: body.name ?? 'My Store',
     country: body.country ?? null,
     currency: body.currency ?? null,

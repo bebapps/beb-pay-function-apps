@@ -22,8 +22,11 @@ export interface Store {
 export function mapStore(store: Store & Resource) {
   return {
     id: store.id,
+    status: store.status,
     name: store.name,
     logo: store.logo,
     branding: store.branding,
+    country: store.country,
+    currency: store.currency,
   };
 }
