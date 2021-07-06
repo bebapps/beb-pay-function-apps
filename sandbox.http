@@ -37,8 +37,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "country": "New Zealand",
-  "currency": "NZD",
+  "country": "US",
+  "currency": "USD",
   "status": "active"
 }
 
@@ -110,3 +110,18 @@ Content-Type: image/png
 
 < /Users/jacob/Desktop/61c301c039bd1c40c53823a5ea7021f5-sticker.png
 ------boundary--
+
+###
+
+# Checkout
+POST http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/checkout
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": "129f151c-22d3-4427-8754-c79333a0daa1",
+      "quantity": 3
+    }
+  ]
+}

@@ -28,9 +28,18 @@ async function createDatabase() {
     },
   });
 
+  const { container: storeCarts } = await database.containers.createIfNotExists({
+    id: 'store-carts',
+    partitionKey: {
+      paths: ['/storeId'],
+      version: 1,
+    },
+  });
+
   return {
     stores,
     storeProducts,
+    storeCarts,
   };
 }
 
