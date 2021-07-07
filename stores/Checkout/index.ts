@@ -85,8 +85,11 @@ export default async function (context: Context, req: HttpRequest) {
     currency,
     ewallet: wallet.id,
     cart_items: cartItems,
-    description: 'Example',
     merchant_reference_id: storeCartId,
+    cancel_checkout_url: getPublicUrl(`/${storeId}/checkout/cancelled`),
+    complete_checkout_url: getPublicUrl(`/${storeId}/checkout/completed`),
+    complete_payment_url: getPublicUrl(`/${storeId}/checkout/completed`),
+    error_payment_url: getPublicUrl(`/${storeId}/checkout/failed`),
   });
 
   const storeCart: StoreCart & Pick<Resource, 'id'> = {
