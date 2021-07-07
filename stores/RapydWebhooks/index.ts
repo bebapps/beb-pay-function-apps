@@ -5,7 +5,7 @@ import { onPaymentCompleted } from '../core/webhooks/onPaymentCompleted';
 interface Webhook {
   id: `wh_${string}`;
   type: 'PAYMENT_COMPLETED';
-  data: any,
+  data: any;
   trigger_operation_id: string;
   status: 'NEW' | unknown;
   created_at: string;
@@ -18,7 +18,7 @@ export default async function (context: Context, req: HttpRequest) {
 
   switch (webhook.type) {
     case 'PAYMENT_COMPLETED': {
-      await onPaymentCompleted(webhook);
+      await onPaymentCompleted(webhook.data);
       break;
     }
     default: {
