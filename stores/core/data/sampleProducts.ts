@@ -10,6 +10,7 @@ export const sampleProducts: Product[] = [
       '/sample-product-images/chicken-shapes-1.jpeg',
       '/sample-product-images/chicken-shapes-2.webp',
     ],
+    barcode: null,
   },
   {
     name: 'Arnotts Shapes Crackers Cheddar',
@@ -20,5 +21,6 @@ export const sampleProducts: Product[] = [
       '/sample-product-images/cheddar-shapes-1.jpeg',
       '/sample-product-images/cheddar-shapes-2.jpeg',
     ],
+    barcode: null,
   },
 ];

@@ -62,7 +62,7 @@ export default async function (context: Context, req: HttpRequest) {
       resourceBody: {
         storeId: storeResource.id,
         ...product,
-      },
+      } as any,
     })));
 
     return STORE_CREATED({

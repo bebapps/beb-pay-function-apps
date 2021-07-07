@@ -20,7 +20,7 @@ const FAILED_TO_ADD_PRODUCT_IMAGE = createErrorResponse(
   500,
 );
 
-type UpdateProduct = Partial<Pick<Product, 'name' | 'description' | 'price'>>;
+type UpdateProduct = Partial<Pick<Product, 'name' | 'description' | 'price' | 'barcode'>>;
 
 export default async function (context: Context, req: HttpRequest) {
   const [fields, files] = getBody<UpdateProduct>(req);
@@ -49,6 +49,13 @@ export default async function (context: Context, req: HttpRequest) {
 
     if (typeof fields.price !== 'undefined') {
       storeProductResource.price = fields.price;
+    }
+
+    if (typeof fields.barcode !== 'undefined') {
+      storeProductResource.barcode = {
+        format: fields.barcode.format,
+        code: fields.barcode.code,
+      };
     }
 
     if (Array.isArray(files.images)) {

@@ -1,10 +1,13 @@
+import { v4 as uuid } from 'uuid';
 import { Context, HttpRequest } from '@azure/functions';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
-import { StoreProduct } from '../core/models/StoreProduct';
+import { mapStoreProduct, StoreProduct } from '../core/models/StoreProduct';
 import { withoutResource } from '../core/models/withoutResource';
 import { doesUserBelongToStore } from '../core/auth/doesUserBelongToStore';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
+import { Resource } from '@azure/cosmos';
+import { importProductImage } from '../core/resources/importProductImage';
 
 const PRODUCT_CREATED = createSuccessResponse(
   'PRODUCT_CREATED',
@@ -28,12 +31,22 @@ export default async function (context: Context, req: HttpRequest) {
     return FAILED_TO_CREATE_PRODUCT();
   }
 
-  const product: StoreProduct = {
+  const productId = uuid();
+  const images: string[] = [];
+
+  if (body.imageUrls) {
+    const importedImageResourcePaths = await Promise.all(body.imageUrls.map((imageUrl) => importProductImage(productId, imageUrl)));
+    images.push(...importedImageResourcePaths.filter(Boolean) as string[]);
+  }
+
+  const product: StoreProduct & Pick<Resource, 'id'> = {
+    id: productId,
     storeId,
     name: body.name,
     description: body.description,
     price: body.price,
-    images: [],
+    images,
+    barcode: body.barcode ?? null,
   };
 
   try {
@@ -41,7 +54,7 @@ export default async function (context: Context, req: HttpRequest) {
     const { resource: productResource } = await storeProducts.items.create(product);
 
     return PRODUCT_CREATED({
-      product: withoutResource(productResource),
+      product: mapStoreProduct(productResource),
     });
   } catch (err) {
     console.error(err);

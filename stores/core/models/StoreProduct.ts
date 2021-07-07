@@ -13,5 +13,6 @@ export function mapStoreProduct(storeProduct: StoreProduct & Resource) {
     description: storeProduct.description,
     price: storeProduct.price,
     images: storeProduct.images.map(getPublicUrl),
+    barcode: storeProduct.barcode,
   };
 }
