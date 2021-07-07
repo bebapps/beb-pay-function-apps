@@ -1,3 +1,4 @@
+import { Resource } from '@azure/cosmos';
 import { getDatabase } from '../getDatabase';
 import { StoreCart } from '../models/StoreCart';
 
@@ -9,16 +10,22 @@ interface PaymentCompletedData {
 export async function onPaymentCompleted(data: PaymentCompletedData) {
   const { storeCarts } = await getDatabase();
 
-  const storeCartItem = storeCarts.item(data.merchant_reference_id);
-  const { statusCode, resource: storeCartResource } = await storeCartItem.read<StoreCart>();
+  const storeCartId = data.merchant_reference_id;
+  const { resources: storeCartResources } = await storeCarts.items.query({
+    query: 'SELECT * FROM c WHERE c.id = @id',
+    parameters: [
+      { name: '@id', value: storeCartId },
+    ],
+  }).fetchAll();
 
-  if (statusCode === 404) {
+  if (!storeCartResources.length) {
     throw new Error(`Failed to locate store cart from payment completed webhook (merchant_reference_id: ${data.merchant_reference_id}).`);
   }
 
+  const [storeCartResource] = storeCartResources as (StoreCart & Resource)[];
   storeCartResource.status = 'paid';
 
-  await storeCartItem.replace(storeCartResource, {
+  await storeCarts.item(storeCartResource.id, storeCartResource.storeId).replace(storeCartResource, {
     accessCondition: {
       condition: storeCartResource._etag,
       type: 'IfMatch',
