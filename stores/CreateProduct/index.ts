@@ -3,7 +3,6 @@ import { Context, HttpRequest } from '@azure/functions';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
 import { mapStoreProduct, StoreProduct } from '../core/models/StoreProduct';
-import { withoutResource } from '../core/models/withoutResource';
 import { doesUserBelongToStore } from '../core/auth/doesUserBelongToStore';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
 import { Resource } from '@azure/cosmos';

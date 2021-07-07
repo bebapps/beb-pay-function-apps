@@ -23,4 +23,16 @@ export const sampleProducts: Product[] = [
     ],
     barcode: null,
   },
+  {
+    name: 'Clearwipe Lens Cleaner',
+    description: 'Quick Drying Pre-moistened Wipes',
+    price: 7.99,
+    images: [
+      '/sample-product-images/clearwipe-lens-cleaner.webp',
+    ],
+    barcode: {
+      format: 'upc_e',
+      code: '12181292',
+    },
+  },
 ];
