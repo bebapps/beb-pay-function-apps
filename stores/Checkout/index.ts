@@ -46,10 +46,6 @@ export default async function (context: Context, req: HttpRequest) {
     partitionKey: storeId,
   })));
 
-  // import Big from 'big.js';
-  // let total = Big(0);
-  // total = total.add(productResource.price);
-
   const cartItems: { name: string; quantity: number; amount: number; image: string; }[] = [];
   const items: StoreCartProductItem[] = [];
 
@@ -90,12 +86,8 @@ export default async function (context: Context, req: HttpRequest) {
     ewallet: wallet.id,
     cart_items: cartItems,
     description: 'Example',
-    metadata: {
-      cartId: storeCartId,
-    },
+    merchant_reference_id: storeCartId,
   });
-
-  console.log({ checkoutPage });
 
   const storeCart: StoreCart & Pick<Resource, 'id'> = {
     id: storeCartId,
