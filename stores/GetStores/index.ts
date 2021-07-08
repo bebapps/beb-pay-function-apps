@@ -28,7 +28,7 @@ export default async function (context: Context, req: HttpRequest) {
     }).fetchAll();
 
     return STORES({
-      stores: storeResources.map((storeResource) => mapStore(storeResource)),
+      stores: storeResources.map((storeResource) => mapStore(storeResource, 'admin')),
     });
   } catch (err) {
     console.error(err);

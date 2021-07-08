@@ -89,7 +89,7 @@ export default async function (context: Context, req: HttpRequest) {
     }
 
     return {
-      store: mapStore(store),
+      store: mapStore(store, 'admin'),
     };
   }, {
     success: STORE_UPDATED,

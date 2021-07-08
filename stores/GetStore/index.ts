@@ -1,6 +1,8 @@
 import { Context, HttpRequest } from '@azure/functions';
+import { getPermissionToStore } from '../core/auth/getPermissionToStore';
 import { getUserIdFromRequest } from '../core/auth/getUserIdFromRequest';
 import { getDatabase } from '../core/getDatabase';
+import { getStore } from '../core/getStore';
 import { mapStore, Store } from '../core/models/Store';
 import { createErrorResponse, createSuccessResponse } from '../core/responses/createResponse';
 
@@ -17,20 +19,17 @@ const FAILED_TO_LOAD_STORE = createErrorResponse(
 
 export default async function (context: Context, req: HttpRequest) {
   const { storeId } = req.params;
-
   const userId = await getUserIdFromRequest(req, false);
 
-  const { stores } = await getDatabase();
-  const { resource: storeResource } = await stores.item(storeId, storeId).read<Store>();
+  const permission = await getPermissionToStore(storeId, userId);
 
-  const isUser = userId !== null && storeResource.userIds.includes(userId);
-  const isStoreActive = storeResource.status === 'active';
-
-  if (isUser || isStoreActive) {
-    return STORE({
-      store: mapStore(storeResource),
-    });
+  if (!permission) {
+    return FAILED_TO_LOAD_STORE();
   }
 
-  return FAILED_TO_LOAD_STORE();
+  const [store] = await getStore(storeId);
+
+  return STORE({
+    store: mapStore(store, permission),
+  });
 };

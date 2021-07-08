@@ -14,6 +14,9 @@ export interface Store {
   };
   wallet: {
     id: `ewallet_${string}`;
+    balances: {
+      [currency: string]: number;
+    };
   };
   createdDate: string;
   createdBy: string;
@@ -21,7 +24,7 @@ export interface Store {
   lastUpdatedBy: string | null;
 }
 
-export function mapStore(store: Store & Resource) {
+export function mapStore(store: Store & Resource, permission: 'admin' | 'guest') {
   return {
     id: store.id,
     status: store.status,
@@ -32,5 +35,8 @@ export function mapStore(store: Store & Resource) {
     country: store.country,
     currency: store.currency,
     url: getPublicUrl('/' + store.id),
+    balances: permission === 'admin'
+      ? store.wallet.balances
+      : undefined,
   };
 }

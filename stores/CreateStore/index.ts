@@ -53,6 +53,7 @@ export default async function (context: Context, req: HttpRequest) {
     });
     store.wallet = {
       id: wallet.id,
+      balances: {},
     };
 
     const { resource: storeResource } = await stores.items.create<Store>(store);
@@ -66,7 +67,7 @@ export default async function (context: Context, req: HttpRequest) {
     })));
 
     return STORE_CREATED({
-      store: mapStore(storeResource),
+      store: mapStore(storeResource, 'admin'),
     });
   } catch (err) {
     console.error(err);

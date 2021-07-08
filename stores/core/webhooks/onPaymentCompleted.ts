@@ -1,6 +1,9 @@
 import { Resource } from '@azure/cosmos';
 import { getDatabase } from '../getDatabase';
 import { StoreCart } from '../models/StoreCart';
+import { retrieveWallet } from '@bebapps/rapyd-sdk/dist/generated/wallet/apis/Wallet';
+import { getRapydClient } from '../rapyd/client';
+import { getStore } from '../getStore';
 
 interface PaymentCompletedData {
   // Unused fields omitted...
@@ -31,6 +34,18 @@ export async function onPaymentCompleted(data: PaymentCompletedData) {
       type: 'IfMatch',
     },
   });
+
+  const [store, storeItem] = await getStore(storeCartResource.storeId);
+
+  const rapidClient = await getRapydClient();
+  const wallet = await retrieveWallet(rapidClient, { wallet: store.wallet.id });
+
+  store.wallet.balances = wallet.accounts.reduce((balances, account) => ({
+    ...balances,
+    [account.currency as string]: account.balance,
+  }), {});
+
+  await storeItem.replace(store);
 
   // TODO push out store webhooks too
 }
