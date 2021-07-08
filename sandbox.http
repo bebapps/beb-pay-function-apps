@@ -1,20 +1,20 @@
-POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users
+POST http://localhost:7071/api/users
 Content-Type: application/json
 
 {
-  "email": "daniel@bebapps.com",
-  "password": "HelloWorld1"
+  "email": "user@example.com",
+  "password": "Passw0rd123"
 }
 
 ###
 
 # @name login
-POST https://beb-dev-pay-usr-aue-01.azurewebsites.net/api/users/login
+POST http://localhost:7071/api/users/login
 Content-Type: application/json
 
 {
-  "email": "jacob@bebapps.com",
-  "password": "HelloWorld1"
+  "email": "user@example.com",
+  "password": "Passw0rd123"
 }
 
 ###
@@ -75,15 +75,28 @@ Authorization: Bearer {{accessToken}}
 
 ###
 
+# Delete Product
+DELETE http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products/87bea2b7-1f6f-4d3f-8d09-e8c493603cf4
+Authorization: Bearer {{accessToken}}
+
+###
+
 # Create Product
 POST http://localhost:7071/api/stores/7bf97742-b545-40d0-a279-33a95129616a/products
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Daniel",
-  "description": "Tasty!",
-  "price": 100
+  "name": "Einstein Collection Metal Puzzles",
+  "description": "Formed of the symbols of Einstein's ground-breaking E=mc2 equation, see if you can separate the two pieces of each metal puzzle and then reattach them Developed in 1905, Einstein's famous theory...",
+  "price": 19.99,
+  "imageUrls": [
+    "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781683837695/harry-potter-spells-and-charms-ruled-pocket-journal-9781683837695_xlg.jpg"
+  ],
+  "barcode": {
+    "format": "ean_13",
+    "code": "5060506531397"
+  }
 }
 
 ###
@@ -122,6 +135,14 @@ Content-Type: application/json
     {
       "productId": "129f151c-22d3-4427-8754-c79333a0daa1",
       "quantity": 3
+    },
+    {
+      "productId": "1c86d717-7d65-4ce1-9e53-26fffb2e751e",
+      "quantity": 2
+    },
+    {
+      "productId": "85ead4cc-500e-480f-b478-f31eee68a254",
+      "quantity": 6
     }
   ]
 }
